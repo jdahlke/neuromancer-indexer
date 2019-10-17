@@ -1,4 +1,4 @@
-require "neuromancer/indexer/version"
+require 'neuromancer/indexer/version'
 
 module Neuromancer
   module Indexer
