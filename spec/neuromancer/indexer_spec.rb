@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+RSpec.configure do |config|
+  config.before :each do
+    NeuromancerSpec.stub
+  end
+end
+
 RSpec.describe Neuromancer::Indexer do
   let(:config) { Neuromancer::Indexer.config }
 
@@ -79,14 +85,6 @@ RSpec.describe Neuromancer::Indexer do
         config.stage = 'test'
         config.sqs_url = 'https://sqs.eu-central-1.amazonaws.com/1234567890/neuromancer-index-test'
       end
-
-      # stub SQS client
-      client = indexer.instance_variable_get('@client')
-      sqs_stub = Aws::SQS::Client.new(
-        region: 'eu-central-1',
-        stub_responses: true
-      )
-      client.instance_variable_set('@sqs', sqs_stub)
     end
 
     context 'with valid object' do

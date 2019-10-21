@@ -23,6 +23,16 @@ Neuromancer::Indexer.index({
 })
 ```
 
+Stubbing in specs
+
+```
+RSpec.configure do |config|
+  config.before :each do
+    NeuromancerSpec.stub
+  end
+end
+```
+
 
 ### Installation
 
