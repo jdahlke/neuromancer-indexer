@@ -1,15 +1,15 @@
 PATH
   remote: .
   specs:
-    neuromancer-indexer (0.1.0)
+    neuromancer-indexer (0.2.0)
       aws-sdk-sqs
 
 GEM
   remote: https://rubygems.org/
   specs:
     aws-eventstream (1.0.3)
-    aws-partitions (1.224.0)
-    aws-sdk-core (3.68.1)
+    aws-partitions (1.226.0)
+    aws-sdk-core (3.69.1)
       aws-eventstream (~> 1.0, >= 1.0.2)
       aws-partitions (~> 1.0)
       aws-sigv4 (~> 1.1)
@@ -40,7 +40,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 2.0)
+  bundler (~> 1.17.3)
   neuromancer-indexer!
   rake (~> 10.0)
   rspec (~> 3.0)
