@@ -15,9 +15,7 @@ module Neuromancer
 
     def self.configure
       yield config
-
       config.validate!
-      @client = Client.new
 
       config
     end

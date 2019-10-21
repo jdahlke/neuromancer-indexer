@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/neuromancer/indexer'
+require_relative '../lib/neuromancer-indexer/rspec'
 
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
