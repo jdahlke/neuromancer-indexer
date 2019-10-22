@@ -60,7 +60,6 @@ RSpec.describe Neuromancer::Indexer do
       let (:configure) do
         Neuromancer::Indexer.configure do |config|
           config.region = 'eu-berlin-15'
-          config.stage = 'test'
           config.sqs_url = 'https://www.example.com'
         end
       end
@@ -69,7 +68,6 @@ RSpec.describe Neuromancer::Indexer do
         configure
 
         expect(config.region).to eq('eu-berlin-15')
-        expect(config.stage).to eq('test')
         expect(config.sqs_url).to eq('https://www.example.com')
       end
     end
@@ -82,7 +80,6 @@ RSpec.describe Neuromancer::Indexer do
     before do
       Neuromancer::Indexer.configure do |config|
         config.region = 'eu-central-1'
-        config.stage = 'test'
         config.sqs_url = 'https://sqs.eu-central-1.amazonaws.com/1234567890/neuromancer-index-test'
       end
     end

@@ -6,11 +6,11 @@ require 'aws-sdk-sqs'
 module Neuromancer
   module Indexer
     class Client
-      attr_reader :config, :sqs
+      attr_reader :config
 
-      def initialize(sqs)
+      def initialize(sqs = nil)
         @config = Neuromancer::Indexer.config
-        @sqs = sqs || Aws::SQS::Client.new(region: config.region)
+        @sqs = sqs
       end
 
       def index(obj)
@@ -25,6 +25,24 @@ module Neuromancer
       end
 
       private
+
+      def sqs
+        @sqs ||= Aws::SQS::Client.new(sqs_options)
+      end
+
+      def sqs_options
+        options = {
+          region: config.region
+        }
+        if config.access_key_id && config.secret_access_key
+          options[:credentials] = Aws::Credentials.new(
+            config.access_key_id,
+            config.secret_access_key
+          )
+        end
+
+        options
+      end
 
       def validate_message!(message)
         hash = JSON.parse(message)
