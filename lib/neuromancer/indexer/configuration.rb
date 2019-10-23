@@ -7,7 +7,7 @@ module Neuromancer
     class Configuration
       attr_accessor :region
       attr_accessor :sqs_url
-      attr_accessor :stage
+      attr_accessor :access_key_id, :secret_access_key
 
       def initialize
         @region = 'eu-central-1'
