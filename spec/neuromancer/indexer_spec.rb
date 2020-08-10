@@ -7,6 +7,18 @@ RSpec.configure do |config|
 end
 
 RSpec.describe Neuromancer::Indexer do
+  shared_examples 'raises error' do |error_class, message|
+    if message
+      it "raises #{error_class}" do
+        expect { subject }.to raise_error(error_class, message)
+      end
+    else
+      it "raises #{error_class}" do
+        expect { subject }.to raise_error(error_class)
+      end
+    end
+  end
+
   let(:config) { Neuromancer::Indexer.config }
 
   describe '.config' do
@@ -16,48 +28,42 @@ RSpec.describe Neuromancer::Indexer do
   end
 
   describe '.configure' do
-    let(:error_class) { Neuromancer::Indexer::ConfigurationError }
+    error_class = Neuromancer::Indexer::ConfigurationError
 
     context 'with empty :region' do
-      let (:configure) do
+      subject do
         Neuromancer::Indexer.configure do |config|
           config.region = ''
         end
       end
 
-      it 'should raise error' do
-        expect { configure }.to raise_error(error_class)
-      end
+      include_examples 'raises error', error_class
     end
 
     context 'with empty :sqs_url' do
-      let (:configure) do
+      subject do
         Neuromancer::Indexer.configure do |config|
           config.region = 'eu-berlin-15'
           config.sqs_url = ''
         end
       end
 
-      it 'should raise error' do
-        expect { configure }.to raise_error(error_class)
-      end
+      include_examples 'raises error', error_class
     end
 
     context 'with invalid :sqs_url' do
-      let (:configure) do
+      subject do
         Neuromancer::Indexer.configure do |config|
           config.region = 'eu-berlin-15'
           config.sqs_url = 'http:this-is-not-an-uri'
         end
       end
 
-      it 'should raise error' do
-        expect { configure }.to raise_error(error_class)
-      end
+      include_examples 'raises error', error_class
     end
 
     context 'with valid values' do
-      let (:configure) do
+      subject do
         Neuromancer::Indexer.configure do |config|
           config.region = 'eu-berlin-15'
           config.sqs_url = 'https://www.example.com'
@@ -65,7 +71,7 @@ RSpec.describe Neuromancer::Indexer do
       end
 
       it 'should set configuration' do
-        configure
+        subject
 
         expect(config.region).to eq('eu-berlin-15')
         expect(config.sqs_url).to eq('https://www.example.com')
@@ -74,14 +80,17 @@ RSpec.describe Neuromancer::Indexer do
   end
 
   describe '.index' do
-    let(:error_class) { Neuromancer::Indexer::Error }
-    let(:indexer) { Neuromancer::Indexer }
+    error_class = Neuromancer::Indexer::InvalidDocument
 
     before do
       Neuromancer::Indexer.configure do |config|
         config.region = 'eu-central-1'
         config.sqs_url = 'https://sqs.eu-central-1.amazonaws.com/1234567890/neuromancer-index-test'
       end
+    end
+
+    subject do
+      described_class.index(obj)
     end
 
     context 'with valid object' do
@@ -96,7 +105,7 @@ RSpec.describe Neuromancer::Indexer do
       end
 
       it 'returns normal SQS response' do
-        expect(indexer.index(obj)).to be_kind_of(Seahorse::Client::Response)
+        is_expected.to be_kind_of(Seahorse::Client::Response)
       end
     end
 
@@ -109,9 +118,7 @@ RSpec.describe Neuromancer::Indexer do
         }
       end
 
-      it 'raise an error' do
-        expect { indexer.index(obj) }.to raise_error(error_class, 'Key `id` in obj cannot be empty')
-      end
+      include_examples 'raises error', error_class, 'document#id is empty'
     end
 
     context 'when obj.type is empty' do
@@ -123,9 +130,7 @@ RSpec.describe Neuromancer::Indexer do
         }
       end
 
-      it 'raise an error' do
-        expect { indexer.index(obj) }.to raise_error(error_class, 'Key `type` in obj cannot be empty')
-      end
+      include_examples 'raises error', error_class, 'document#type is empty'
     end
 
     context 'when obj.body is not a Hash' do
@@ -137,8 +142,34 @@ RSpec.describe Neuromancer::Indexer do
         }
       end
 
-      it 'raise an error' do
-        expect { indexer.index(obj) }.to raise_error(error_class, 'Key `body` must be a Hash')
+      include_examples 'raises error', error_class, 'document#body is not a Hash'
+    end
+  end
+
+  describe '.delete' do
+    error_class = Neuromancer::Indexer::InvalidDocument
+
+    before do
+      Neuromancer::Indexer.configure do |config|
+        config.region = 'eu-central-1'
+        config.sqs_url = 'https://sqs.eu-central-1.amazonaws.com/1234567890/neuromancer-index-test'
+      end
+    end
+
+    subject do
+      described_class.delete(obj)
+    end
+
+    context 'with valid object' do
+      let(:obj) do
+        {
+          id: 'id-1',
+          type: 'objects'
+        }
+      end
+
+      it 'returns normal SQS response' do
+        is_expected.to be_kind_of(Seahorse::Client::Response)
       end
     end
   end

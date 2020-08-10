@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'aws-sdk-sqs'
-
 module Neuromancer
   module Indexer
     class Client
@@ -13,15 +10,31 @@ module Neuromancer
         @sqs = sqs
       end
 
-      def index(obj)
-        message = obj.to_json
-        validate_message!(message)
+      def index(id:, type:, body:)
+        document = Document.new(id: id, type: type, body: body)
+        document.validate!
 
-        sqs.send_message({
+        enqueue(action: 'index', document: document)
+      end
+
+      def delete(id:, type:)
+        document = Document.new(id: id, type: type, body: {})
+        document.validate!
+
+        enqueue(action: 'delete', document: document)
+      end
+
+      def enqueue(action:, document:)
+        message = {
+          action: action,
+          document: document
+        }
+
+        sqs.send_message(
           queue_url: config.sqs_url,
-          message_body: message,
+          message_body: message.to_json,
           delay_seconds: 1
-        })
+        )
       end
 
       private
@@ -34,7 +47,7 @@ module Neuromancer
         options = {
           region: config.region
         }
-        if config.access_key_id && config.secret_access_key
+        if present?(config.access_key_id) && present?(config.secret_access_key)
           options[:credentials] = Aws::Credentials.new(
             config.access_key_id,
             config.secret_access_key
@@ -44,23 +57,11 @@ module Neuromancer
         options
       end
 
-      def validate_message!(message)
-        hash = JSON.parse(message)
-        id = hash['id'].to_s
-        type = hash['type'].to_s
-        body = hash['body']
+      def present?(value)
+        return false if value.nil?
+        return false if value.empty?
 
-        if id.empty?
-          raise Error, 'Key `id` in obj cannot be empty'
-        end
-
-        if type.empty?
-          raise Error, 'Key `type` in obj cannot be empty'
-        end
-
-        if !body.is_a?(Hash)
-          raise Error, 'Key `body` must be a Hash'
-        end
+        true
       end
     end
   end
