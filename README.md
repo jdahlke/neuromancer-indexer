@@ -1,6 +1,6 @@
 # neuromancer-indexer
 
-[![Build Status](https://travis-ci.com/jdahlke/neuromancer-indexer.svg?branch=develop)](https://travis-ci.com/jdahlke/neuromancer-indexer)
+[![GitHub Actions Test Status](https://github.com/jdahlke/neuromancer-indexer/workflows/Tests/badge.svg?branch=develop)](https://github.com/jdahlke/neuromancer-indexer/actions)
 
 Ruby gem to push data for indexing to the Neuromancer service
 
