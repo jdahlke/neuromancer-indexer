@@ -30,11 +30,11 @@ module Neuromancer
           document: document
         }
 
-        sqs.send_message({
+        sqs.send_message(
           queue_url: config.sqs_url,
           message_body: message.to_json,
           delay_seconds: 1
-        })
+        )
       end
 
       private
@@ -56,7 +56,6 @@ module Neuromancer
 
         options
       end
-
 
       def present?(value)
         return false if value.nil?
