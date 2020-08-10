@@ -14,23 +14,17 @@ module Neuromancer
       end
 
       def validate!
-        if region.to_s.empty?
-          raise ConfigurationError, '`region` cannot be empty'
-        end
+        raise ConfigurationError, '\'region\' cannot be empty' if region.to_s.empty?
 
-        if sqs_url.to_s.empty?
-          raise ConfigurationError, '`sqs_url` cannot be empty'
-        end
+        raise ConfigurationError, '\'sqs_url\' cannot be empty' if sqs_url.to_s.empty?
 
+        invalid_protocol = '\'sqs_url\' must be a HTTPS url'
         begin
-          if URI(sqs_url).scheme != 'https'
-            raise ConfigurationError, '`sqs_url` must be a HTTPS url'
-          end
-        rescue => e
-          raise ConfigurationError, '`sqs_url` must be a HTTPS url'
+          raise ConfigurationError, invalid_protocol if URI(sqs_url).scheme != 'https'
+        rescue StandardError
+          raise ConfigurationError, invalid_protocol
         end
       end
     end
   end
 end
-
