@@ -1,5 +1,9 @@
 ## Changelog
 
+#### 0.4.3
+- add `Neuromancer::Indexer.delete`
+- add GitHub workflows for `RSpec`, `Rubocop` and `RubyGems`
+
 #### 0.3.0
 - optionally use AWS user credentials for SQS instead of role credentials
 
