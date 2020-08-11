@@ -10,15 +10,15 @@ module Neuromancer
         @sqs = sqs
       end
 
-      def index(id:, type:, body:)
-        document = Document.new(id: id, type: type, body: body)
+      def index(id:, type:, attributes:)
+        document = Document.new(id: id, type: type, attributes: attributes)
         document.validate!
 
         enqueue(action: 'index', document: document)
       end
 
       def delete(id:, type:)
-        document = Document.new(id: id, type: type, body: {})
+        document = Document.new(id: id, type: type, attributes: {})
         document.validate!
 
         enqueue(action: 'delete', document: document)
