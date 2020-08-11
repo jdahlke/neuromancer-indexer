@@ -2,9 +2,12 @@
 
 [![GitHub Actions Test Status](https://github.com/jdahlke/neuromancer-indexer/workflows/Tests/badge.svg?branch=develop)](https://github.com/jdahlke/neuromancer-indexer/actions)
 
-Ruby gem to push data for indexing to the Neuromancer service
+Ruby gem to push data for indexing to the Neuromancer service.
 
-### Configuration and Usage
+
+### Getting started
+
+Configuration
 
 ```
 Neuromancer::Indexer.configure do |config|
@@ -15,8 +18,12 @@ Neuromancer::Indexer.configure do |config|
   config.access_key_id = 'AWS_ACCESS_KEY_ID'
   config.secret_access_key = 'AWS_SECRET_ACCESS_KEY'
 end
+```
 
-Neuromancer::Indexer.index({
+Indexing objects
+
+```
+Neuromancer::Indexer.index(
   id: 'id-1',
   type: 'objects',
   attributes: {
@@ -24,10 +31,19 @@ Neuromancer::Indexer.index({
     bar: 123,
     baz: ['abc', 'def']
   }
-})
+)
 ```
 
-Stubbing in specs
+Deleting objects
+
+```
+Neuromancer::Indexer.delete(
+  id: 'id-1',
+  type: 'objects'
+)
+```
+
+Stubbing in Specs
 
 ```
 RSpec.configure do |config|
@@ -49,5 +65,5 @@ gem 'neuromancer-indexer'
 ### Test
 
 ```
-bundle exec rake spec
+bundle exec rspec spec
 ```

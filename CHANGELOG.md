@@ -1,5 +1,8 @@
 ## Changelog
 
+#### 0.4.4
+- [fix] rename `obj.body` to `obj.attributes`
+
 #### 0.4.3
 - add `Neuromancer::Indexer.delete`
 - add GitHub workflows for `RSpec`, `Rubocop` and `RubyGems`
