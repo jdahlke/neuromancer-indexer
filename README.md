@@ -19,7 +19,7 @@ end
 Neuromancer::Indexer.index({
   id: 'id-1',
   type: 'objects',
-  body: {
+  attributes: {
     foo: 'foo-string',
     bar: 123,
     baz: ['abc', 'def']

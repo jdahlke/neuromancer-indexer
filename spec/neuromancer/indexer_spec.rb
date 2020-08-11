@@ -98,7 +98,7 @@ RSpec.describe Neuromancer::Indexer do
         {
           id: 'id-1',
           type: 'objects',
-          body: {
+          attributes: {
             foo: 'bar'
           }
         }
@@ -114,7 +114,7 @@ RSpec.describe Neuromancer::Indexer do
         {
           id: '',
           type: 'objects',
-          body: {}
+          attributes: {}
         }
       end
 
@@ -126,23 +126,23 @@ RSpec.describe Neuromancer::Indexer do
         {
           id: 'id-1',
           type: '',
-          body: {}
+          attributes: {}
         }
       end
 
       include_examples 'raises error', error_class, 'document#type is empty'
     end
 
-    context 'when obj.body is not a Hash' do
+    context 'when obj.attributes is not a Hash' do
       let(:obj) do
         {
           id: 'id-1',
           type: 'objects',
-          body: 'invalid-body'
+          attributes: 'invalid-attributes'
         }
       end
 
-      include_examples 'raises error', error_class, 'document#body is not a Hash'
+      include_examples 'raises error', error_class, 'document#attributes is not a Hash'
     end
   end
 
